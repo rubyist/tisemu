@@ -8,7 +8,8 @@ type T21 struct {
 	acc   int
 	bak   int
 	pc    int
-	code  []command
+	p     program
+	term  chan interface{}
 }
 
 type Port int
@@ -20,6 +21,22 @@ const (
 	RIGHT
 	ACC
 	NIL
+)
+
+const (
+	NOP = iota
+	MOV
+	SWP
+	SAV
+	ADD
+	SUB
+	NEG
+	JMP
+	JEZ
+	JNZ
+	JGZ
+	JLZ
+	JRO
 )
 
 func (n *T21) Nop() {
@@ -69,13 +86,40 @@ func (n *T21) Jgz(label string) {
 func (n *T21) Jlz(label string) {
 }
 
-func (n *T21) Jro(src int) {
+func (n *T21) Jro(src Port) {
+	if int(src) == 0 {
+		close(n.term)
+	}
 }
 
 func (n *T21) Run() {
+	n.term = make(chan interface{})
+
 	go func() {
 		for {
-			n.writeDown(n.readUp())
+			select {
+			case <-n.term:
+				return
+			default:
+			}
+
+			if n.pc > 15 {
+				n.pc = 0
+			}
+
+			command := n.p[n.pc]
+			switch command.Op {
+			case NOP:
+			case MOV:
+				n.Mov(command.Src, command.Dst)
+			case ADD:
+				n.Add(command.Src)
+			case JRO:
+				n.Jro(command.Src)
+			default:
+			}
+
+			n.pc++
 		}
 	}()
 }
@@ -118,7 +162,11 @@ func (n *T21) writeRight(v int) {
 	n.right <- v
 }
 
-type command struct {
-	Opcode int
-	Value  int
+type instruction struct {
+	Op    int
+	Src   Port
+	Dst   Port
+	Label string
 }
+
+type program [16]instruction

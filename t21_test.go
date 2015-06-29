@@ -1,6 +1,9 @@
 package main
 
-import "testing"
+import (
+	"testing"
+	"time"
+)
 
 func TestInitValues(t *testing.T) {
 	n := &T21{}
@@ -78,5 +81,22 @@ func TestNeg(t *testing.T) {
 
 	if n.acc != -4 {
 		t.Errorf("Expected ACC to be -4 after `NEG`, got %d\n", n.acc)
+	}
+}
+
+func TestSimpleProgram(t *testing.T) {
+	var p program
+	p[0] = instruction{Op: MOV, Src: 4, Dst: ACC}
+	p[1] = instruction{Op: ADD, Src: 1}
+	p[2] = instruction{Op: JRO, Src: 0}
+
+	n := &T21{}
+	n.p = p
+	n.Run()
+
+	time.Sleep(time.Millisecond * 20)
+
+	if n.acc != 5 {
+		t.Errorf("Expected ACC to be 5 after program run, got %d\n", n.acc)
 	}
 }
