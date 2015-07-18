@@ -16,7 +16,7 @@ const (
 
 type Tis100 struct {
 	clock <-chan time.Time
-	nodes [][]*T21
+	nodes [][]*T21 // TODO: Need to support other node types
 }
 
 func NewTis100(nodes NodeMap) *Tis100 {
@@ -29,7 +29,7 @@ func NewTis100(nodes NodeMap) *Tis100 {
 	}
 
 	t := &Tis100{
-		clock: time.Tick(time.Millisecond * 100),
+		clock: time.Tick(time.Millisecond * 10),
 	}
 
 	for _, list := range nodes {
