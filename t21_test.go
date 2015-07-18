@@ -6,7 +6,7 @@ import (
 )
 
 func TestInitValues(t *testing.T) {
-	n := &T21{}
+	n := NewT21()
 
 	if n.acc != 0 {
 		t.Errorf("Expected ACC to be 0, got %d\n", n.acc)
@@ -18,7 +18,7 @@ func TestInitValues(t *testing.T) {
 }
 
 func TestSimpleMov(t *testing.T) {
-	n := &T21{}
+	n := NewT21()
 	n.Mov(4, ACC)
 
 	if n.acc != 4 {
@@ -26,8 +26,69 @@ func TestSimpleMov(t *testing.T) {
 	}
 }
 
+func TestMovIn(t *testing.T) {
+	n := NewT21()
+
+	c := make(chan int, 1)
+	n.up = c
+	c <- 4
+
+	n.Mov(UP, ACC)
+
+	if n.acc != 4 {
+		t.Errorf("Expected ACC to be 4 after `MOV UP ACC`, got %d\n", n.acc)
+	}
+}
+
+func TestMovAccOut(t *testing.T) {
+	n := NewT21()
+
+	c := make(chan int, 1)
+	n.down = c
+
+	n.Mov(4, ACC)
+	n.Mov(ACC, DOWN)
+
+	v := <-c
+	if v != 4 {
+		t.Errorf("Expected to receive 4 from `MOV ACC DOWN`, got %d\n", v)
+	}
+}
+
+func TestMovVal(t *testing.T) {
+	n := NewT21()
+
+	c := make(chan int, 1)
+	n.down = c
+
+	n.Mov(4, DOWN)
+
+	v := <-c
+	if v != 4 {
+		t.Errorf("Expected to receive 4 from `MOV 4 DOWN`, got %d\n", v)
+	}
+}
+
+func TestMovThrough(t *testing.T) {
+	n := NewT21()
+
+	up := make(chan int, 1)
+	down := make(chan int, 1)
+
+	n.up = up
+	n.down = down
+
+	up <- 4
+	n.Mov(UP, DOWN)
+
+	v := <-down
+	if v != 4 {
+		t.Errorf("Expected to receive 4 from `MOV UP DOWN`, got %d\n", v)
+	}
+}
+
 func TestSwp(t *testing.T) {
-	n := &T21{}
+	n := NewT21()
 	n.Mov(4, ACC)
 	n.Swp()
 
@@ -38,10 +99,20 @@ func TestSwp(t *testing.T) {
 	if n.bak != 4 {
 		t.Errorf("Expected BAK to be 4 after `SWP`, got %d\n", n.bak)
 	}
+
+	n.Swp()
+
+	if n.acc != 4 {
+		t.Errorf("Expected ACC to be 4 after `SWP`, got %d\n", n.acc)
+	}
+
+	if n.bak != 0 {
+		t.Errorf("Expected BAK to be 0 after `SWP`, got %d\n", n.bak)
+	}
 }
 
 func TestSav(t *testing.T) {
-	n := &T21{}
+	n := NewT21()
 	n.Mov(4, ACC)
 	n.Sav()
 
@@ -55,7 +126,7 @@ func TestSav(t *testing.T) {
 }
 
 func TestSimpleAdd(t *testing.T) {
-	n := &T21{}
+	n := NewT21()
 	n.Mov(4, ACC)
 	n.Add(1)
 
@@ -65,7 +136,7 @@ func TestSimpleAdd(t *testing.T) {
 }
 
 func TestSimpleSub(t *testing.T) {
-	n := &T21{}
+	n := NewT21()
 	n.Mov(4, ACC)
 	n.Sub(1)
 
@@ -75,7 +146,7 @@ func TestSimpleSub(t *testing.T) {
 }
 
 func TestNeg(t *testing.T) {
-	n := &T21{}
+	n := NewT21()
 	n.Mov(4, ACC)
 	n.Neg()
 
@@ -85,13 +156,24 @@ func TestNeg(t *testing.T) {
 }
 
 func TestSimpleProgram(t *testing.T) {
-	var p program
-	p[0] = instruction{Op: MOV, Src: 4, Dst: ACC}
-	p[1] = instruction{Op: ADD, Src: 1}
-	p[2] = instruction{Op: JRO, Src: 0}
+	p := []Statement{
+		{
+			Op:  MOV,
+			Src: 4,
+			Dst: ACC,
+		},
+		{
+			Op:  ADD,
+			Src: 1,
+		},
+		{
+			Op:  JRO,
+			Src: 0,
+		},
+	}
 
-	n := &T21{}
-	n.p = p
+	n := NewT21()
+	n.Program(p)
 	n.Run()
 
 	time.Sleep(time.Millisecond * 20)
