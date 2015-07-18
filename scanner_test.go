@@ -43,6 +43,8 @@ func TestScanner(t *testing.T) {
 		{s: `DOWN`, tok: DOWN, lit: "DOWN"},
 		{s: `LEFT`, tok: LEFT, lit: "LEFT"},
 		{s: `RIGHT`, tok: RIGHT, lit: "RIGHT"},
+		{s: `ANY`, tok: ANY, lit: "ANY"},
+		{s: `LAST`, tok: LAST, lit: "LAST"},
 		{s: `ACC`, tok: ACC, lit: "ACC"},
 		{s: `NIL`, tok: NIL, lit: "NIL"},
 	}

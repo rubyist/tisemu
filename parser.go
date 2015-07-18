@@ -141,7 +141,7 @@ func isValidSrc(tok Token) bool {
 	}
 
 	switch tok {
-	case NUMBER, ACC, UP, DOWN, LEFT, RIGHT:
+	case NUMBER, ACC, UP, DOWN, LEFT, RIGHT, ANY, LAST:
 		return true
 	}
 	return false
@@ -150,7 +150,7 @@ func isValidSrc(tok Token) bool {
 func isValidDst(tok Token) bool {
 	// UP, DOWN, LEFT, RIGHT, NIL
 	switch tok {
-	case ACC, UP, DOWN, LEFT, RIGHT, NIL:
+	case ACC, UP, DOWN, LEFT, RIGHT, ANY, LAST, NIL:
 		return true
 	}
 	return false

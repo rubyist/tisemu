@@ -72,6 +72,14 @@ func TestParserParse(t *testing.T) {
 			},
 		},
 		{
+			s: `MOV ANY LAST`,
+			stmt: Statement{
+				Op:  MOV,
+				Src: ANY,
+				Dst: LAST,
+			},
+		},
+		{
 			s: `ADD UP`,
 			stmt: Statement{
 				Op:  ADD,

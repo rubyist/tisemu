@@ -57,6 +57,8 @@ var keys = map[string]Token{
 	"DOWN":  DOWN,
 	"LEFT":  LEFT,
 	"RIGHT": RIGHT,
+	"ANY":   ANY,
+	"LAST":  LAST,
 	"ACC":   ACC,
 	"NIL":   NIL,
 }
