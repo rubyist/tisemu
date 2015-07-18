@@ -124,7 +124,7 @@ func (n *T21) Run() {
 			default:
 			}
 
-			if n.pc > 15 {
+			if n.pc > len(n.p)-1 { // TODO Should limit to 16
 				n.pc = 0
 			}
 
