@@ -89,6 +89,8 @@ func (t *Tis100) Program(r io.Reader) {
 		}
 		if stmt.Op == EOF {
 			break
+		} else if stmt.Op == COMMENT {
+			continue
 		} else if stmt.Op == NODE {
 			curNode = int(stmt.Src)
 		} else {

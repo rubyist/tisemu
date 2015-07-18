@@ -36,6 +36,8 @@ func (p *Parser) Parse() (Statement, error) {
 	case NODE:
 		n, _ := strconv.Atoi(lit[1:len(lit)])
 		return Statement{Op: NODE, Src: Token(n)}, nil
+	case COMMENT:
+		return Statement{Op: COMMENT, Label: lit}, nil
 	case LABEL:
 		return Statement{Op: LABEL, Label: lit}, nil
 	case NOP:

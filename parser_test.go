@@ -19,6 +19,13 @@ func TestParserParse(t *testing.T) {
 			},
 		},
 		{
+			s: `#Comment`,
+			stmt: Statement{
+				Op:    COMMENT,
+				Label: `#Comment`,
+			},
+		},
+		{
 			s: `@2`,
 			stmt: Statement{
 				Op:  NODE,
