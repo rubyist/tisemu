@@ -78,13 +78,36 @@ func (n *T21) Add(src Token) {
 	switch src {
 	case ACC:
 		val = n.acc
+	case LEFT:
+		val = n.readLeft()
+	case RIGHT:
+		val = n.readRight()
+	case UP:
+		val = n.readUp()
+	case DOWN:
+		val = n.readDown()
 	}
 
 	n.acc += val
 }
 
 func (n *T21) Sub(src Token) {
-	n.acc -= int(src)
+	val := int(src)
+
+	switch src {
+	case ACC:
+		val = n.acc
+	case LEFT:
+		val = n.readLeft()
+	case RIGHT:
+		val = n.readRight()
+	case UP:
+		val = n.readUp()
+	case DOWN:
+		val = n.readDown()
+	}
+
+	n.acc -= val
 }
 
 func (n *T21) Neg() {
@@ -113,6 +136,14 @@ func (n *T21) Jro(src Token) {
 }
 
 func (n *T21) Run() {
+	if len(n.p) == 0 {
+		n.p = []Statement{
+			{
+				Op: NOP,
+			},
+		}
+	}
+
 	n.term = make(chan interface{})
 
 	go func() {
@@ -182,7 +213,10 @@ func (n *T21) ConnectRight(neighbor *T21) {
 }
 
 func (n *T21) tick() {
-	n.ticker <- 1
+	select {
+	case n.ticker <- 1:
+	default:
+	}
 }
 
 func (n *T21) readUp() int {

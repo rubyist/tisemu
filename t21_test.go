@@ -1,6 +1,9 @@
 package main
 
-import "testing"
+import (
+	"testing"
+	"time"
+)
 
 func TestInitValues(t *testing.T) {
 	n := NewT21()
@@ -175,6 +178,7 @@ func TestSimpleProgram(t *testing.T) {
 
 	// Manually tick the clock
 	for i := 0; i < len(p); i++ {
+		time.Sleep(time.Millisecond * 10)
 		n.tick()
 	}
 
