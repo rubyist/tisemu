@@ -14,7 +14,9 @@ type T21 struct {
 }
 
 func NewT21() *T21 {
-	t21 := &T21{}
+	t21 := &T21{
+		ticker: make(chan interface{}),
+	}
 	return t21
 }
 
@@ -115,6 +117,7 @@ func (n *T21) Run() {
 
 	go func() {
 		for {
+			<-n.ticker
 			select {
 			case <-n.term:
 				return

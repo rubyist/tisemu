@@ -1,9 +1,6 @@
 package main
 
-import (
-	"testing"
-	"time"
-)
+import "testing"
 
 func TestInitValues(t *testing.T) {
 	n := NewT21()
@@ -176,7 +173,10 @@ func TestSimpleProgram(t *testing.T) {
 	n.Program(p)
 	n.Run()
 
-	time.Sleep(time.Millisecond * 20)
+	// Manually tick the clock
+	for i := 0; i < len(p); i++ {
+		n.tick()
+	}
 
 	if n.acc != 5 {
 		t.Errorf("Expected ACC to be 5 after program run, got %d\n", n.acc)
