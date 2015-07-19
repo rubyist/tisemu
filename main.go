@@ -12,9 +12,11 @@ import (
 )
 
 func main() {
-	tis := NewTis100(StandardMap)
 
+	var inputArgs []string
+	var outputArgs []string
 	var tisfile string
+	maptype := "standard"
 
 	for i := 1; i < len(os.Args); i++ {
 		arg := os.Args[i]
@@ -25,16 +27,46 @@ func main() {
 		}
 
 		if strings.HasPrefix(arg, "-in=") {
-			in := newInput(arg)
-			tis.Input(in.C, in.Node)
-			in.Run()
+			inputArgs = append(inputArgs, arg)
 		}
 
 		if strings.HasPrefix(arg, "-out=") {
-			out := newOutput(arg)
-			out.C = tis.Output(out.Node)
-			out.Run()
+			outputArgs = append(outputArgs, arg)
 		}
+
+		if strings.HasPrefix(arg, "-map=") {
+			parts := strings.Split(arg, "=")
+			if len(parts) != 2 {
+				log.Fatalf("Invalid map type: %s", arg)
+			}
+
+			switch parts[1] {
+			case "standard", "memory":
+				maptype = parts[1]
+			default:
+				log.Fatalf("Invalid map type: %s", parts[1])
+			}
+		}
+	}
+
+	var tis *Tis100
+	switch maptype {
+	case "standard":
+		tis = NewTis100(StandardMap)
+	case "memory":
+		tis = NewTis100(MemoryMap)
+	}
+
+	for _, arg := range inputArgs {
+		in := newInput(arg)
+		tis.Input(in.C, in.Node)
+		in.Run()
+	}
+
+	for _, arg := range outputArgs {
+		out := newOutput(arg)
+		out.C = tis.Output(out.Node)
+		out.Run()
 	}
 
 	f, err := os.Open(tisfile)

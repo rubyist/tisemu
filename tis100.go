@@ -33,7 +33,7 @@ var StandardMap = NodeMap{
 }
 
 var MemoryMap = NodeMap{
-	{T21Node, T21Node, T30Node, T21Node},
+	{T21Node, T30Node, T21Node, T21Node},
 	{T21Node, T21Node, T21Node, T21Node},
 	{T21Node, T30Node, T21Node, T21Node},
 }
