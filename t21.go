@@ -76,6 +76,7 @@ func (n *T21) Mov(src, dst Token) {
 		n.writeRight(val)
 	case ANY:
 		n.writeAny(val)
+	case NIL:
 	default:
 		panic("unknown destination")
 	}
