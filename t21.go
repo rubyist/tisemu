@@ -261,12 +261,6 @@ func (n *T21) ConnectDown(neighbor *T21) {
 	neighbor.up = c
 }
 
-func (n *T21) ConnectLeft(neighbor *T21) {
-	c := make(chan int)
-	n.left = c
-	neighbor.right = c
-}
-
 func (n *T21) ConnectRight(neighbor *T21) {
 	c := make(chan int)
 	n.right = c
