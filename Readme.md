@@ -9,3 +9,7 @@ Example:
 ./tisemu sequence-indexer.tis -map=memory -in=0,in.v -in=2,in.x -out=10,out
 ```
 
+```
+./tisemu display.tis -display
+```
+

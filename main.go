@@ -17,6 +17,7 @@ func main() {
 	var outputArgs []string
 	var tisfile string
 	maptype := "standard"
+	usedisplay := false
 
 	for i := 1; i < len(os.Args); i++ {
 		arg := os.Args[i]
@@ -28,6 +29,10 @@ func main() {
 
 		if strings.HasPrefix(arg, "-in=") {
 			inputArgs = append(inputArgs, arg)
+		}
+
+		if arg == "-display" {
+			usedisplay = true
 		}
 
 		if strings.HasPrefix(arg, "-out=") {
@@ -63,10 +68,16 @@ func main() {
 		in.Run()
 	}
 
-	for _, arg := range outputArgs {
-		out := newOutput(arg)
-		out.C = tis.Output(out.Node)
-		out.Run()
+	if usedisplay {
+		d := NewDisplay()
+		d.in = tis.Output(10)
+		d.Run()
+	} else {
+		for _, arg := range outputArgs {
+			out := newOutput(arg)
+			out.C = tis.Output(out.Node)
+			out.Run()
+		}
 	}
 
 	f, err := os.Open(tisfile)
