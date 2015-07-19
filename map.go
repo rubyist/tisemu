@@ -20,10 +20,12 @@ var StandardMachine = &MachineMap{
 }
 
 type MachineMap struct {
-	Cols    int
-	Rows    int
-	Display bool
-	NodeMap [][]NodeType
+	Cols        int
+	Rows        int
+	Display     bool
+	DisplayRows int
+	DisplayCols int
+	NodeMap     [][]NodeType
 }
 
 func NewMachineMap(r io.Reader) (*MachineMap, error) {
@@ -46,11 +48,13 @@ func NewMachineMap(r io.Reader) (*MachineMap, error) {
 	m.Rows = rows
 
 	// Has a display?
-	d, err := readBool(buf)
+	enabled, dr, dc, err := readDisplay(buf)
 	if err != nil {
 		return nil, err
 	}
-	m.Display = d
+	m.Display = enabled
+	m.DisplayRows = dr
+	m.DisplayCols = dc
 
 	// Node types
 	for i := 0; i < rows; i++ {
@@ -80,15 +84,33 @@ func readInt(r *bufio.Reader) (int, error) {
 	return n, nil
 }
 
-func readBool(r *bufio.Reader) (bool, error) {
+func readDisplay(r *bufio.Reader) (bool, int, int, error) {
 	l, err := r.ReadString('\n')
 	if err != nil {
-		return false, err
+		return false, 0, 0, err
 	}
-	if strings.TrimSpace(l) == "T" {
-		return true, nil
+	l = strings.TrimSpace(l)
+
+	if l == "F" {
+		return false, 0, 0, nil
 	}
-	return false, nil
+
+	parts := strings.Split(l, " ")
+	if len(parts) != 3 {
+		return false, 0, 0, fmt.Errorf("Invalid display description: %s", l)
+	}
+
+	rows, err := strconv.Atoi(parts[1])
+	if err != nil {
+		return false, 0, 0, fmt.Errorf("Invalid row count %s", parts[1])
+	}
+
+	cols, err := strconv.Atoi(parts[2])
+	if err != nil {
+		return false, 0, 0, fmt.Errorf("Invalid col count %s", parts[2])
+	}
+
+	return true, rows, cols, nil
 }
 
 func readNodeType(r *bufio.Reader) (NodeType, error) {
