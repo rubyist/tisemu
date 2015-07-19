@@ -189,6 +189,18 @@ func TestParserParse(t *testing.T) {
 				Op: HCF,
 			},
 		},
+		{
+			s: `SWP`,
+			stmt: Statement{
+				Op: SWP,
+			},
+		},
+		{
+			s: `SAV`,
+			stmt: Statement{
+				Op: SAV,
+			},
+		},
 	}
 
 	for i, tt := range tests {

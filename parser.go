@@ -52,6 +52,10 @@ func (p *Parser) Parse() (Statement, error) {
 		return p.parseLabeledJump(tok)
 	case JRO:
 		return p.parseJro()
+	case SWP:
+		return Statement{Op: SWP}, nil
+	case SAV:
+		return Statement{Op: SAV}, nil
 	case HCF:
 		return Statement{Op: HCF}, nil
 	}
