@@ -29,10 +29,10 @@ func NewT21() *T21 {
 }
 
 func (n *T21) Program(p []Statement) {
-	for i, stmt := range p {
+	for _, stmt := range p {
 		if stmt.Op == LABEL {
 			l := stmt.Label[0 : len(stmt.Label)-1] // Remove trailing ':'
-			n.labels[l] = i
+			n.labels[l] = len(n.p)
 		} else {
 			n.p = append(n.p, stmt)
 		}
