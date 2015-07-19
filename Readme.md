@@ -5,9 +5,9 @@ is a rad open-ended programming game where you solve puzzles by programming a
 multi-node machine in a kind of assembly language. You should probably go play
 the game instead of messing around here.
 
-`tisemu` supports the `T21` execution node, the `T30` stack memory node, and
-the visualization mode. I think there are plans to add more node types to the
-game. When that happens I'll probably add them here.
+`tisemu` supports the `T21` execution node, the `T30` stack memory node, and a
+terminal based visualization mode (using termbox). I think there are plans to
+add more node types to the game. When that happens I'll probably add them here.
 
 ## Machine Maps
 
