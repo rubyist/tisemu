@@ -7,10 +7,14 @@ type Display struct {
 	state DisplayState
 	x     int
 	y     int
+	rows  int
+	cols  int
 }
 
-func NewDisplay() *Display {
+func NewDisplay(rows, cols int) *Display {
 	return &Display{
+		rows:  rows,
+		cols:  cols,
 		state: READX,
 	}
 }
@@ -36,6 +40,9 @@ func (d *Display) Run() {
 				d.y = v
 				d.state = READCOLOR
 			case READCOLOR:
+				if d.x > d.cols || d.y > d.rows {
+					continue
+				}
 				termbox.SetCell(d.x, d.y, ' ', termbox.ColorDefault, dcolors[v])
 				termbox.Flush()
 				d.x++

@@ -66,7 +66,7 @@ func main() {
 	}
 
 	if mm.Display {
-		d := NewDisplay()
+		d := NewDisplay(mm.DisplayRows, mm.DisplayCols)
 		d.in = tis.Output(10)
 		d.Run()
 	} else {
