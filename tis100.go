@@ -29,7 +29,7 @@ func NewTis100(nodes NodeMap) *Tis100 {
 	}
 
 	t := &Tis100{
-		clock: time.Tick(time.Millisecond * 10),
+		clock: time.Tick(time.Millisecond),
 	}
 
 	for _, list := range nodes {
