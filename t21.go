@@ -17,17 +17,26 @@ type T21 struct {
 	p      []Statement
 	term   chan interface{}
 	ticker chan interface{}
+	labels map[string]int
 }
 
 func NewT21() *T21 {
 	t21 := &T21{
 		ticker: make(chan interface{}),
+		labels: make(map[string]int),
 	}
 	return t21
 }
 
 func (n *T21) Program(p []Statement) {
-	n.p = p
+	for i, stmt := range p {
+		if stmt.Op == LABEL {
+			l := stmt.Label[0 : len(stmt.Label)-1] // Remove trailing ':'
+			n.labels[l] = i
+		} else {
+			n.p = append(n.p, stmt)
+		}
+	}
 }
 
 func (n *T21) Nop() {
@@ -121,24 +130,46 @@ func (n *T21) Neg() {
 }
 
 func (n *T21) Jmp(label string) {
+	n.jmpTo(label)
 }
 
-func (n *T21) Jez(label string) {
+func (n *T21) Jez(label string) bool {
+	if n.acc == 0 {
+		n.jmpTo(label)
+		return true
+	}
+	return false
 }
 
-func (n *T21) Jnz(label string) {
+func (n *T21) Jnz(label string) bool {
+	if n.acc != 0 {
+		n.jmpTo(label)
+		return true
+	}
+	return false
 }
 
-func (n *T21) Jgz(label string) {
+func (n *T21) Jgz(label string) bool {
+	if n.acc > 0 {
+		n.jmpTo(label)
+		return true
+	}
+	return false
 }
 
-func (n *T21) Jlz(label string) {
+func (n *T21) Jlz(label string) bool {
+	if n.acc < 0 {
+		n.jmpTo(label)
+		return true
+	}
+	return false
 }
 
 func (n *T21) Jro(src Token) {
 	if int(src) == 0 {
 		close(n.term)
 	}
+	n.pc += int(src)
 }
 
 func (n *T21) Hcf() {
@@ -194,16 +225,26 @@ func (n *T21) Run() {
 				n.Neg()
 			case JMP:
 				n.Jmp(command.Label)
+				continue
 			case JEZ:
-				n.Jez(command.Label)
+				if n.Jez(command.Label) {
+					continue
+				}
 			case JNZ:
-				n.Jnz(command.Label)
+				if n.Jnz(command.Label) {
+					continue
+				}
 			case JGZ:
-				n.Jgz(command.Label)
+				if n.Jgz(command.Label) {
+					continue
+				}
 			case JLZ:
-				n.Jlz(command.Label)
+				if n.Jlz(command.Label) {
+					continue
+				}
 			case JRO:
 				n.Jro(command.Src)
+				continue
 			case HCF:
 				n.Hcf()
 			default:
@@ -291,6 +332,14 @@ func (n *T21) writeLeft(v int) {
 
 func (n *T21) writeRight(v int) {
 	n.right <- v
+}
+
+func (n *T21) jmpTo(label string) {
+	if line, ok := n.labels[label]; ok {
+		n.pc = line
+	} else {
+		panic("Uknown label: " + label)
+	}
 }
 
 var hcf = int32(0)
