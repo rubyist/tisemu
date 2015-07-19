@@ -52,6 +52,8 @@ func (p *Parser) Parse() (Statement, error) {
 		return p.parseLabeledJump(tok)
 	case JRO:
 		return p.parseJro()
+	case HCF:
+		return Statement{Op: HCF}, nil
 	}
 
 	return stmt, fmt.Errorf("bad statement: %s", lit)

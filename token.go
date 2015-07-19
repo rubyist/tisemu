@@ -37,6 +37,7 @@ const (
 	NIL
 	ANY
 	LAST
+	HCF
 )
 
 var keys = map[string]Token{
@@ -61,6 +62,7 @@ var keys = map[string]Token{
 	"LAST":  LAST,
 	"ACC":   ACC,
 	"NIL":   NIL,
+	"HCF":   HCF,
 }
 
 var eof = rune(0)

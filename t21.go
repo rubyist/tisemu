@@ -1,5 +1,11 @@
 package main
 
+import (
+	"fmt"
+	"sync/atomic"
+	"time"
+)
+
 type T21 struct {
 	up     chan int
 	down   chan int
@@ -135,6 +141,14 @@ func (n *T21) Jro(src Token) {
 	}
 }
 
+func (n *T21) Hcf() {
+	atomic.StoreInt32(&hcf, 1)
+	for {
+		fmt.Print("🔥")
+		time.Sleep(time.Millisecond * 10)
+	}
+}
+
 func (n *T21) Run() {
 	if len(n.p) == 0 {
 		n.p = []Statement{
@@ -148,6 +162,10 @@ func (n *T21) Run() {
 
 	go func() {
 		for {
+			if atomic.LoadInt32(&hcf) == 1 {
+				return
+			}
+
 			<-n.ticker
 			select {
 			case <-n.term:
@@ -186,6 +204,8 @@ func (n *T21) Run() {
 				n.Jlz(command.Label)
 			case JRO:
 				n.Jro(command.Src)
+			case HCF:
+				n.Hcf()
 			default:
 			}
 
@@ -272,3 +292,5 @@ func (n *T21) writeLeft(v int) {
 func (n *T21) writeRight(v int) {
 	n.right <- v
 }
+
+var hcf = int32(0)

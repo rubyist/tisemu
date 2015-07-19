@@ -47,6 +47,7 @@ func TestScanner(t *testing.T) {
 		{s: `LAST`, tok: LAST, lit: "LAST"},
 		{s: `ACC`, tok: ACC, lit: "ACC"},
 		{s: `NIL`, tok: NIL, lit: "NIL"},
+		{s: `HCF`, tok: HCF, lit: "HCF"},
 	}
 
 	for i, tt := range tests {
