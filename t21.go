@@ -39,9 +39,6 @@ func (n *T21) Program(p []Statement) {
 	}
 }
 
-func (n *T21) Nop() {
-}
-
 func (n *T21) Mov(src, dst Token) {
 	val := int(src)
 	switch src {
