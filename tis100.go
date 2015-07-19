@@ -14,6 +14,12 @@ const (
 	T31Node
 )
 
+var StandardMap = NodeMap{
+	{T21Node, T21Node, T21Node, T21Node},
+	{T21Node, T21Node, T21Node, T21Node},
+	{T21Node, T21Node, T21Node, T21Node},
+}
+
 type Tis100 struct {
 	clock <-chan time.Time
 	nodes [][]*T21 // TODO: Need to support other node types
