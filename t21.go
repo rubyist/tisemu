@@ -249,23 +249,39 @@ func (n *T21) Run() {
 	}()
 }
 
-func (n *T21) ConnectDown(neighbor *T21) {
+func (n *T21) ConnectDown(neighbor MachineNode) {
 	c := make(chan int)
-	n.down = c
-	neighbor.up = c
+	n.Down(c)
+	neighbor.Up(c)
 }
 
-func (n *T21) ConnectRight(neighbor *T21) {
+func (n *T21) ConnectRight(neighbor MachineNode) {
 	c := make(chan int)
-	n.right = c
-	neighbor.left = c
+	n.Right(c)
+	neighbor.Left(c)
 }
 
-func (n *T21) tick() {
+func (n *T21) Tick() {
 	select {
 	case n.ticker <- 1:
 	default:
 	}
+}
+
+func (n *T21) Down(c chan int) {
+	n.down = c
+}
+
+func (n *T21) Up(c chan int) {
+	n.up = c
+}
+
+func (n *T21) Right(c chan int) {
+	n.right = c
+}
+
+func (n *T21) Left(c chan int) {
+	n.left = c
 }
 
 func (n *T21) readUp() int {

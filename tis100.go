@@ -8,6 +8,18 @@ import (
 type NodeType int
 type NodeMap [][]NodeType
 
+type MachineNode interface {
+	ConnectDown(MachineNode)
+	ConnectRight(MachineNode)
+	Down(chan int)
+	Up(chan int)
+	Right(chan int)
+	Left(chan int)
+	Program([]Statement)
+	Run()
+	Tick()
+}
+
 const (
 	T21Node NodeType = iota
 	T30Node
@@ -20,9 +32,15 @@ var StandardMap = NodeMap{
 	{T21Node, T21Node, T21Node, T21Node},
 }
 
+var MemoryMap = NodeMap{
+	{T21Node, T21Node, T30Node, T21Node},
+	{T21Node, T21Node, T21Node, T21Node},
+	{T21Node, T30Node, T21Node, T21Node},
+}
+
 type Tis100 struct {
 	clock <-chan time.Time
-	nodes [][]*T21 // TODO: Need to support other node types
+	nodes [][]MachineNode
 }
 
 func NewTis100(nodes NodeMap) *Tis100 {
@@ -39,12 +57,14 @@ func NewTis100(nodes NodeMap) *Tis100 {
 	}
 
 	for _, list := range nodes {
-		var cnodes []*T21
+		var cnodes []MachineNode
 
 		for _, node := range list {
 			switch node {
 			case T21Node:
 				cnodes = append(cnodes, NewT21())
+			case T30Node:
+				cnodes = append(cnodes, NewT30())
 			default:
 				panic("uknown node type")
 			}
@@ -71,14 +91,14 @@ func NewTis100(nodes NodeMap) *Tis100 {
 
 func (t *Tis100) Input(in chan int, node int) {
 	row, col := t.nodeOffsets(node)
-	t.nodes[row][col].up = in
+	t.nodes[row][col].Up(in)
 }
 
 func (t *Tis100) Output(node int) chan int {
 	row, col := t.nodeOffsets(node)
 
 	out := make(chan int)
-	t.nodes[row][col].down = out
+	t.nodes[row][col].Down(out)
 	return out
 }
 
@@ -122,7 +142,7 @@ func (t *Tis100) Run() {
 			<-t.clock
 			for _, nodes := range t.nodes {
 				for _, node := range nodes {
-					node.tick()
+					node.Tick()
 				}
 			}
 		}

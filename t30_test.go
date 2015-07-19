@@ -25,7 +25,7 @@ func TestT30(t *testing.T) {
 				return
 			default:
 				time.Sleep(time.Millisecond * 5)
-				n.tick()
+				n.Tick()
 			}
 		}
 	}()

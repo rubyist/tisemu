@@ -96,19 +96,35 @@ func (n *T30) Run() {
 	}()
 }
 
-func (n *T30) ConnectDown(neighbor *T30) {
+func (n *T30) ConnectDown(neighbor MachineNode) {
 	c := make(chan int)
+	n.Down(c)
+	neighbor.Up(c)
+}
+
+func (n *T30) ConnectRight(neighbor MachineNode) {
+	c := make(chan int)
+	n.Right(c)
+	neighbor.Left(c)
+}
+
+func (n *T30) Down(c chan int) {
 	n.down = c
-	neighbor.up = c
 }
 
-func (n *T30) ConnectRight(neighbor *T30) {
-	c := make(chan int)
+func (n *T30) Up(c chan int) {
+	n.up = c
+}
+
+func (n *T30) Right(c chan int) {
 	n.right = c
-	neighbor.left = c
 }
 
-func (n *T30) tick() {
+func (n *T30) Left(c chan int) {
+	n.left = c
+}
+
+func (n *T30) Tick() {
 	select {
 	case n.readTicker <- 1:
 	default:
