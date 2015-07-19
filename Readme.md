@@ -61,3 +61,9 @@ open file `in.a` and write its lines as input to node `1`.
 ./tisemu display.tis -map=display.map
 ```
 
+Here's an example of the visualization mode solving part of the exposure mask
+viewer puzzle from the game. I've slowed down the system clock so the drawing
+operations are displayed.
+
+![tisemu](https://cloud.githubusercontent.com/assets/143/8767250/63e59a56-2e24-11e5-9372-4b2801801f21.gif)
+
