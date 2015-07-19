@@ -24,11 +24,18 @@ func NewT21() *T21 {
 	t21 := &T21{
 		ticker: make(chan interface{}),
 		labels: make(map[string]int),
+		p:      []Statement{{Op: NOP}},
 	}
 	return t21
 }
 
 func (n *T21) Program(p []Statement) {
+	if len(p) == 0 {
+		return
+	}
+
+	n.p = []Statement{}
+
 	for _, stmt := range p {
 		if stmt.Op == LABEL {
 			l := stmt.Label[0 : len(stmt.Label)-1] // Remove trailing ':'
@@ -176,14 +183,6 @@ func (n *T21) Hcf() {
 }
 
 func (n *T21) Run() {
-	if len(n.p) == 0 {
-		n.p = []Statement{
-			{
-				Op: NOP,
-			},
-		}
-	}
-
 	n.term = make(chan interface{})
 
 	go func() {
