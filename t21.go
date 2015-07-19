@@ -75,9 +75,7 @@ func (n *T21) Mov(src, dst Token) {
 }
 
 func (n *T21) Swp() {
-	tmp := n.bak
-	n.bak = n.acc
-	n.acc = tmp
+	n.bak, n.acc = n.acc, n.bak
 }
 
 func (n *T21) Sav() {
