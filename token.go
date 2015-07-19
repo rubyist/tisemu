@@ -1,6 +1,15 @@
 package main
 
+import "fmt"
+
 type Token int
+
+func (t Token) String() string {
+	if t < 1000 {
+		return fmt.Sprintf("%d", t)
+	}
+	return tokStrings[t]
+}
 
 const (
 	ILLEGAL Token = iota + 1000
@@ -63,6 +72,31 @@ var keys = map[string]Token{
 	"ACC":   ACC,
 	"NIL":   NIL,
 	"HCF":   HCF,
+}
+
+var tokStrings = map[Token]string{
+	NOP:   "NOP",
+	MOV:   "MOV",
+	ADD:   "ADD",
+	SUB:   "SUB",
+	NEG:   "NEG",
+	SWP:   "SWP",
+	SAV:   "SAV",
+	JMP:   "JMP",
+	JGZ:   "JGZ",
+	JEZ:   "JEZ",
+	JLZ:   "JLZ",
+	JNZ:   "JNZ",
+	JRO:   "JRO",
+	UP:    "UP",
+	DOWN:  "DOWN",
+	LEFT:  "LEFT",
+	RIGHT: "RIGHT",
+	ANY:   "ANY",
+	LAST:  "LAST",
+	ACC:   "ACC",
+	NIL:   "NIL",
+	HCF:   "HCF",
 }
 
 var eof = rune(0)

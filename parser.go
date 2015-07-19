@@ -13,6 +13,10 @@ type Statement struct {
 	Label string
 }
 
+func (s Statement) String() string {
+	return fmt.Sprintf("%s %v %v (%s)", s.Op, s.Src, s.Dst, s.Label)
+}
+
 type Parser struct {
 	s   *Scanner
 	buf struct {
