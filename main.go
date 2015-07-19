@@ -15,9 +15,8 @@ func main() {
 
 	var inputArgs []string
 	var outputArgs []string
+	var mapfile string
 	var tisfile string
-	maptype := "standard"
-	usedisplay := false
 
 	for i := 1; i < len(os.Args); i++ {
 		arg := os.Args[i]
@@ -31,10 +30,6 @@ func main() {
 			inputArgs = append(inputArgs, arg)
 		}
 
-		if arg == "-display" {
-			usedisplay = true
-		}
-
 		if strings.HasPrefix(arg, "-out=") {
 			outputArgs = append(outputArgs, arg)
 		}
@@ -45,22 +40,24 @@ func main() {
 				log.Fatalf("Invalid map type: %s", arg)
 			}
 
-			switch parts[1] {
-			case "standard", "memory":
-				maptype = parts[1]
-			default:
-				log.Fatalf("Invalid map type: %s", parts[1])
-			}
+			mapfile = parts[1]
 		}
 	}
 
-	var tis *Tis100
-	switch maptype {
-	case "standard":
-		tis = NewTis100(StandardMap)
-	case "memory":
-		tis = NewTis100(MemoryMap)
+	mm := StandardMachine
+
+	if mapfile != "" {
+		mf, err := os.Open(mapfile)
+		if err != nil {
+			log.Fatalf("Could not open mapfile: %s", err)
+		}
+		mm, err = NewMachineMap(mf)
+		if err != nil {
+			log.Fatalf("Failed reading mapfile: %s", err)
+		}
 	}
+
+	tis := NewTis100(mm.NodeMap)
 
 	for _, arg := range inputArgs {
 		in := newInput(arg)
@@ -68,7 +65,7 @@ func main() {
 		in.Run()
 	}
 
-	if usedisplay {
+	if mm.Display {
 		d := NewDisplay()
 		d.in = tis.Output(10)
 		d.Run()

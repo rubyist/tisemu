@@ -8,6 +8,17 @@ import (
 	"strings"
 )
 
+var StandardMachine = &MachineMap{
+	Cols:    4,
+	Rows:    3,
+	Display: false,
+	NodeMap: [][]NodeType{
+		{T21Node, T21Node, T21Node, T21Node},
+		{T21Node, T21Node, T21Node, T21Node},
+		{T21Node, T21Node, T21Node, T21Node},
+	},
+}
+
 type MachineMap struct {
 	Cols    int
 	Rows    int

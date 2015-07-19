@@ -26,18 +26,6 @@ const (
 	T31Node
 )
 
-var StandardMap = NodeMap{
-	{T21Node, T21Node, T21Node, T21Node},
-	{T21Node, T21Node, T21Node, T21Node},
-	{T21Node, T21Node, T21Node, T21Node},
-}
-
-var MemoryMap = NodeMap{
-	{T21Node, T30Node, T21Node, T21Node},
-	{T21Node, T21Node, T21Node, T21Node},
-	{T21Node, T30Node, T21Node, T21Node},
-}
-
 type Tis100 struct {
 	clock <-chan time.Time
 	nodes [][]MachineNode
